@@ -19,17 +19,36 @@ class PlacesListScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Consumer<GreatPlaces>(
-        child: Center(child: Text('Got no Place yet, Start adding some!!!'),),
-        //kiem tra xem trong list items co gia tri khong neu khong thi tra ve ch la child o tren
-        builder: (ctx, greatPlace, ch)=> greatPlace.items.length <= 0 ? ch : ListView.builder(
-          itemCount: greatPlace.items.length,
-          itemBuilder: (ctx, index) => ListTile(
-            leading: CircleAvatar(backgroundImage: FileImage(greatPlace.items[index].image),),
-            title: Text(greatPlace.items[index].title),
-            onTap:() => Navigator.of(context).pushNamed(DetailPlace.routeName, arguments: greatPlace.items[index].id),
-          ),
-        ),
+      body: FutureBuilder(
+        future:
+            Provider.of<GreatPlaces>(context, listen: false).fetchAndSetPlace(),
+        builder: (ctx, snapshot) => snapshot.connectionState ==
+                ConnectionState.waiting
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Consumer<GreatPlaces>(
+                child: Center(
+                  child: Text('Got no Place yet, Start adding some!!!'),
+                ),
+                //kiem tra xem trong list items co gia tri khong neu khong thi tra ve ch la child o tren
+                builder: (ctx, greatPlace, ch) => greatPlace.items.length <= 0
+                    ? ch
+                    : ListView.builder(
+                        itemCount: greatPlace.items.length,
+                        itemBuilder: (ctx, index) => ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage:
+                                FileImage(greatPlace.items[index].image),
+                          ),
+                          title: Text(greatPlace.items[index].title),
+                          onTap: () => Navigator.of(context).pushNamed(
+                            DetailPlace.routeName,
+                            arguments: greatPlace.items[index].id,
+                          ),
+                        ),
+                      ),
+              ),
       ),
     );
   }

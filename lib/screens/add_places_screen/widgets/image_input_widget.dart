@@ -16,12 +16,14 @@ class ImageInput extends StatefulWidget {
 
 class _ImageInputState extends State<ImageInput> {
   File _storedImage;
-
   Future<void> _takePicture() async {
     final fileImage = await ImagePicker.pickImage(
       source: ImageSource.camera,
       maxWidth: 600,
     );
+    if(fileImage == null){
+      return;
+    }//neu khong chup thi khong tra ve cai gi het
     setState(() {
       _storedImage = fileImage;
     });
@@ -64,8 +66,9 @@ class _ImageInputState extends State<ImageInput> {
             icon: Icon(Icons.camera),
             textColor: Colors.deepOrange,
             label: Text('Take Picture'),
+
           ),
-        )
+        ),
       ],
     );
   }
